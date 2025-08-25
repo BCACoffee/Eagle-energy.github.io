@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BCA Coffee Rewards</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#9b111e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; }}
+    html, body {{ margin: 0; padding: 0; }}
+    body {{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.35;
+      background: #f7f7fb;
+      color: #111;
+    }}
+    header {{
+      position: sticky; top: 0; background: white;
+      padding: 10px clamp(12px, 3vw, 24px);
+      border-bottom: 1px solid #e8e8ef;
+      display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+      z-index: 5;
+    }}
+    .logo {{ width: 44px; height: 44px; border-radius: 8px; border: 1px solid #e5e5ee; }}
+    h1 {{ margin: 0; font-size: clamp(18px, 2.6vw, 28px); letter-spacing: .2px; }}
+    .subtitle {{ color: #5a5a6b; font-size: 13px; }}
+    .tag {{ font-size: 12px; padding: 4px 8px; border: 1px solid #ddd; border-radius: 999px; color: #444; background: #fafafa; }}
+    .admin {{ background: #ffeaea; border-color: #ffb2b2; color: #9b111e; }}
+    main {{ padding: 16px clamp(12px, 3vw, 24px) 80px; max-width: 1200px; margin: 0 auto; }}
+    .card {{ background: white; border: 1px solid #e8e8ef; border-radius: 14px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }}
+    .row {{ display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }}
+    .grow {{ flex: 1 1 240px; }}
+    input[type="text"], input[type="number"], input[type="date"] {{ width: 100%; border: 1px solid #d9d9e6; background: #fff; border-radius: 12px; padding: 10px 12px; font-size: 15px; outline: none; }}
+    input[type="file"] {{ display: none; }}
+    .btn {{ appearance: none; border: 1px solid #d1d1de; background: #fff; padding: 9px 12px; border-radius: 12px; font-size: 14px; cursor: pointer; }}
+    .btn:active {{ transform: translateY(1px); }}
+    .btn.primary {{ background: #0d67ff; color: white; border-color: #0d67ff; }}
+    .btn.ghost {{ background: #f5f7ff; border-color: #d8e1ff; color: #0d3cff; }}
+    .btn.danger {{ background: #fff0f0; border-color: #ffd7d7; color: #c70000; }}
+    .btn.small {{ padding: 6px 10px; font-size: 13px; border-radius: 10px; }}
+    .toolbar {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }}
+    .list {{ margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 10px; }}
+    .customer {{ display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; border: 1px solid #ececf4; padding: 12px; border-radius: 12px; background: #fcfcff; }}
+    .customer.free {{ border-color: #8bd48b; background: #f3fff3; }}
+    .customer .name {{ font-weight: 600; font-size: 16px; }}
+    .meta {{ font-size: 13px; color: #606080; margin-top: 2px; }}
+    .pill {{ font-size: 12px; padding: 3px 8px; border-radius: 999px; background: #eef2ff; color: #3340aa; border: 1px solid #dfe6ff; display: inline-block; margin-left: 6px; }}
+    .count {{ font-variant-numeric: tabular-nums; font-weight: 700; padding: 4px 8px; border-radius: 8px; background: #fff; border: 1px solid #e8e8ef; min-width: 40px; text-align: center; display: inline-block; }}
+    .actions {{ display: flex; gap: 6px; flex-wrap: wrap; }}
+    .muted {{ color: #7a7a8a; }}
+    footer {{ position: sticky; bottom: 0; background: linear-gradient(to top, rgba(247,247,251,1), rgba(247,247,251,0.9)); border-top: 1px solid #ececf4; padding: 10px clamp(12px, 3vw, 24px); display: flex; gap: 10px; align-items: center; justify-content: space-between; backdrop-filter: saturate(1.2) blur(2px); }}
+    .hint {{ font-size: 12px; color: #666; }}
+    @media (min-width: 680px) {{ .list {{ grid-template-columns: 1fr 1fr; }} }}
+    @media (min-width: 1000px) {{ .list {{ grid-template-columns: 1fr 1fr 1fr; }} }}
+    .brand-strip {{ background: #9b111e; color: white; border-radius: 10px; padding: 8px 12px; display: inline-block; }}
+  </style>
+</head>
+<body>
+  <header>
+    <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAmtElEQVR4nO2deXxV1dX3v/ucc88dkpt5ZkhCQGSeVUREwAG1xaFiq1K1tlVxbB/toLZPB1vr0zp1sK9PW+vc4my1jogKIooMCSRACEMSEjIP9yZ3PsN+/7g3IZFBEhDo+/rj8yFw783e667fHtZae619hJRS8iWOGZRjLcD/7/iSgGOMLwk4xviSgGOMLwk4xviPJWDHjh38+Ic/Yuk//olhGMdanEFD/KeZoQ179vDkE0/yz2eeob6+HpfLxamzZnHdDUuYN28eivKfNab+Ywiorq7muWef5YXnnqemuhqv18s55y5g+/YdbCwtxePxMGv2aVx51dWcMfcMXC7XsRb50CCPY0QiEbly5Up56y23ygljx8mstHRZkJsnv77oUrl6zRopbVt2dnXJBx96SE6eOFFmpaXLoXn58tyzz5H/+8gjcvfu3cf6K3wujrsZEIvF2LJ5C+8tX867y5axZfNmAoEAycnJnHzqqXz7+uuYN2cOLSs+pOye35E1YypTbvsebdLmqcce44Wlz1FbWwNAQUEBM089lXPOXcApM2eSm5t7bL/cfnBcENDc3MzmigpWf7Sa1R99RNW2Kvx+H6qikFdQwNwzz+Syby5m2pQp+NauY+ODf6T5reUIw0TaEmfhUE647hrGfGsxPqHw2iuv8OLSZynftIlAIICu6xQMGcLkKVOYPfs0pp90EiNGjMDtdh/rr370CfD7/TTsaWD79ioqNpVTXl7O9qoqmpqaiEQiaKpGVk42U6ZN5dzzzmfeOWeTl5JCw/IVbH30cVrfXwmRCKrTCQKEBGmamIaJu7iQwssXMXrxZTiGDaVs40beeO01Vix/j507dxIMBFAVhdS0NAqLihg3fhwTJkzgxDFjKCoqJis7C6fTeTTVceQJiEajhIJBfH4/ra2tNDY0UF9XT21NDbW1teypr6elpYWuri4Mw0BVVbxeL0OHD2PylCmcPncup8yaxZCcHAI7dlH9r1epeeEVAlsqUUwb4dQRith/54aFacTQMjLInjebkssWMeT02cScTioqKljx3vt88tFHbN+2jdbWVqLRKEII3G436enp5BcUUFhYSGFREcMLCykYUkBubi4ZGRl4vV5cLheaph1JdQ2cgO7ubl579VV8nT4ikQg+n49A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" alt="BCA logo" />
+    <div>
+      <h1 class="brand-strip">BCA Coffee Rewards</h1>
+      <div class="subtitle">Buy 10, get 1 free • Tap +1 for each purchase</div>
+    </div>
+    <div class="row">
+      <div class="tag" id="totalStats">0 customers • 0 free drinks ready</div>
+      <button class="btn small" id="lockBtn" onclick="toggleLock()">Unlock</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" id="adminCard" style="display:none;">
+      <div class="row">
+        <input id="addName" class="grow" type="text" placeholder="Add customer (name or student ID)" />
+        <button class="btn primary" onclick="addCustomer()">Add</button>
+      </div>
+      <div class="toolbar">
+        <input id="search" type="text" class="grow" placeholder="Search by name or ID…" oninput="render()" />
+        <button class="btn ghost" onclick="exportData()">Export</button>
+        <label class="btn ghost" for="importFile">Import</label>
+        <input type="file" id="importFile" accept=".json" />
+        <button class="btn" onclick="resetAll()">Reset Counts</button>
+        <button class="btn danger" onclick="deleteAll()">Delete All</button>
+        <button class="btn" onclick="changePin()">Change PIN</button>
+      </div>
+    </section>
+
+    <section class="card" id="publicCard">
+      <div class="toolbar">
+        <input id="searchPublic" type="text" class="grow" placeholder="Search by name or ID…" oninput="render()" />
+        <span class="muted">View-only mode. Unlock to make changes.</span>
+      </div>
+    </section>
+
+    <div id="list" class="list"></div>
+
+    <section class="card" id="reportsCard" style="display:none;">
+      <h3>Reports</h3>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn small" onclick="setQuickRange('today')">Today</button>
+        <button class="btn small" onclick="setQuickRange('week')">This Week</button>
+        <input class="btn small" type="date" id="fromDate">
+        <span>to</span>
+        <input class="btn small" type="date" id="toDate">
+        <button class="btn small" onclick="renderReport()">Run</button>
+        <button class="btn small ghost" onclick="exportCSV()">Export CSV</button>
+      </div>
+      <div id="reportSummary" class="meta"></div>
+      <div id="topCustomers"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="hint">Install to Home Screen for app-like use. Data stays on this device.</div>
+    <div class="row">
+      <label class="btn small" for="targetInput">Target</label>
+      <input id="targetInput" class="btn small" style="width: 64px; text-align:center;" type="number" min="1" value="10" disabled />
+    </div>
+  </footer>
+
+  <script>
+    const LS_KEY = 'bca_coffee_rewards_v2';
+    let isStaff = false;
+    let state = {{ target: 10, customers: [], events: [], pin: null }};
+
+    const targetInput = document.getElementById('targetInput');
+    const importInput = document.getElementById('importFile');
+    function save() {{ try {{ state.target = Math.max(1, parseInt(targetInput.value || '10', 10)); localStorage.setItem(LS_KEY, JSON.stringify(state)); }} catch(e) {{ console.warn(e); }} renderStats(); }}
+    function load() {{ try {{ const raw = localStorage.getItem(LS_KEY); if (raw) state = JSON.parse(raw); }} catch(e) {{ console.warn(e); }} targetInput.value = state.target || 10; render(); }}
+
+    function id() {{ return Math.random().toString(36).slice(2, 10); }}
+
+    // STAFF LOCK
+    function toggleLock() {{
+      if (isStaff) {{ isStaff = false; document.getElementById('lockBtn').textContent = 'Unlock'; showAdmin(false); return; }}
+      if (!state.pin) {{
+        const p1 = prompt('Set a new Staff PIN (numbers recommended):'); if (!p1) return;
+        const p2 = prompt('Confirm PIN:'); if (p1 !== p2) {{ alert('PINs do not match.'); return; }}
+        state.pin = p1; save();
+      }}
+      const attempt = prompt('Enter Staff PIN:'); if (attempt === state.pin) {{ isStaff = true; document.getElementById('lockBtn').textContent = 'Lock'; showAdmin(true); }}
+      else {{ alert('Incorrect PIN.'); }}
+    }}
+    function changePin() {{
+      const cur = prompt('Enter current PIN:'); if (cur !== state.pin) {{ alert('Incorrect.'); return; }}
+      const p1 = prompt('New PIN:'); if (!p1) return; const p2 = prompt('Confirm New PIN:'); if (p1 !== p2) {{ alert('PINs do not match.'); return; }}
+      state.pin = p1; save(); alert('PIN updated.');
+    }}
+    function showAdmin(show) {{
+      document.getElementById('adminCard').style.display = show ? 'block' : 'none';
+      document.getElementById('reportsCard').style.display = show ? 'block' : 'none';
+      document.getElementById('publicCard').style.display = show ? 'none' : 'block';
+      targetInput.disabled = !show;
+      render();
+    }}
+
+    // Customers
+    function addCustomer() {{
+      const nameEl = document.getElementById('addName');
+      const name = (nameEl.value || '').trim();
+      if (!name) {{ nameEl.focus(); return; }}
+      state.customers.push({{ id: id(), name, count: 0, freeAvailable: 0, totalPurchases: 0, updatedAt: Date.now() }});
+      state.events.push({{ t: Date.now(), type: 'add_customer', cid: state.customers[state.customers.length-1].id }});
+      nameEl.value = ''; save(); render();
+    }}
+    function findCustomer(cid) {{ return state.customers.find(c => c.id === cid); }}
+    function matchesFilter(cust, q) {{
+      const s = (q || '').trim().toLowerCase(); if (!s) return true; return cust.name.toLowerCase().includes(s);
+    }}
+    function sortCustomers(a,b) {{ if ((b.freeAvailable||0)!==(a.freeAvailable||0)) return (b.freeAvailable||0)-(a.freeAvailable||0); if (b.count!==a.count) return b.count-a.count; return a.name.localeCompare(b.name); }}
+
+    function render() {{
+      const list = document.getElementById('list');
+      const q = (isStaff ? document.getElementById('search').value : document.getElementById('searchPublic').value) || '';
+      const filtered = state.customers.filter(c => matchesFilter(c, q)).sort(sortCustomers);
+      list.innerHTML = '';
+      filtered.forEach(cust => {{
+        const freeDue = cust.count >= state.target;
+        const hasFree = (cust.freeAvailable || 0) > 0;
+        const div = document.createElement('div');
+        div.className = 'customer' + (freeDue || hasFree ? ' free' : '');
+
+        const left = document.createElement('div');
+        const name = document.createElement('div'); name.className = 'name'; name.textContent = cust.name; left.appendChild(name);
+        const meta = document.createElement('div'); meta.className = 'meta';
+        meta.innerHTML = `Punches: <span class="count">${{cust.count}}/${{state.target}}</span> 
+                          <span class="pill">Total: ${{cust.totalPurchases}}</span>
+                          ${{hasFree ? '<span class="pill">Free ready: ' + cust.freeAvailable + '</span>' : ''}}`;
+        left.appendChild(meta);
+
+        const right = document.createElement('div'); right.className = 'actions';
+
+        if (isStaff) {{
+          const plus = document.createElement('button'); plus.className = 'btn primary small'; plus.textContent = '+1 Purchase';
+          plus.onclick = () => increment(cust.id); right.appendChild(plus);
+
+          if (freeDue || hasFree) {{
+            const redeem = document.createElement('button'); redeem.className = 'btn ghost small'; redeem.textContent = 'Redeem Free';
+            redeem.title = 'Redeem 1 free drink and subtract target punches'; redeem.onclick = () => redeemFree(cust.id); right.appendChild(redeem);
+          }}
+          const minus = document.createElement('button'); minus.className = 'btn small'; minus.textContent = '−1'; minus.onclick = () => decrement(cust.id); right.appendChild(minus);
+          const reset = document.createElement('button'); reset.className = 'btn small'; reset.textContent = 'Reset'; reset.onclick = () => resetOne(cust.id); right.appendChild(reset);
+          const del = document.createElement('button'); del.className = 'btn danger small'; del.textContent = 'Delete'; del.onclick = () => deleteOne(cust.id); right.appendChild(del);
+        }}
+
+        div.appendChild(left); div.appendChild(right); list.appendChild(div);
+      }});
+      save();
+    }}
+
+    function renderStats() {{
+      const total = state.customers.length;
+      const ready = state.customers.reduce((acc, c) => acc + (c.freeAvailable || 0) + Math.floor(c.count / state.target), 0);
+      document.getElementById('totalStats').textContent = `${{total}} customers • ${{ready}} free drinks ready`;
+    }}
+
+    // Events & increments
+    function increment(cid) {{
+      const c = findCustomer(cid); if (!c) return;
+      c.count += 1; c.totalPurchases += 1; c.updatedAt = Date.now();
+      state.events.push({{ t: Date.now(), type: 'purchase', cid }});
+      while (c.count >= state.target) {{ c.count -= state.target; c.freeAvailable = (c.freeAvailable || 0) + 1; }}
+      save(); render();
+    }}
+    function decrement(cid) {{
+      const c = findCustomer(cid); if (!c) return;
+      if (c.count > 0) c.count -= 1; if (c.totalPurchases > 0) c.totalPurchases -= 1; c.updatedAt = Date.now();
+      state.events.push({{ t: Date.now(), type: 'undo_purchase', cid }});
+      save(); render();
+    }}
+    function redeemFree(cid) {{
+      const c = findCustomer(cid); if (!c) return;
+      if (c.freeAvailable && c.freeAvailable > 0) {{ c.freeAvailable -= 1; }}
+      else if (c.count >= state.target) {{ c.count -= state.target; }}
+      else {{ alert('No free drink available for this customer yet.'); return; }}
+      c.updatedAt = Date.now(); state.events.push({{ t: Date.now(), type: 'redeem', cid }});
+      save(); render();
+    }}
+    function resetOne(cid) {{
+      const c = findCustomer(cid); if (!c) return;
+      if (!confirm('Reset punches for ' + c.name + '?')) return;
+      c.count = 0; c.freeAvailable = 0; c.updatedAt = Date.now(); state.events.push({{ t: Date.now(), type: 'reset_one', cid }});
+      save(); render();
+    }}
+    function deleteOne(cid) {{
+      const c = findCustomer(cid); if (!c) return;
+      if (!confirm('Delete ' + c.name + '? This cannot be undone.')) return;
+      state.customers = state.customers.filter(x => x.id !== cid); state.events.push({{ t: Date.now(), type: 'delete_customer', cid }});
+      save(); render();
+    }}
+    function resetAll() {{ if (!confirm('Reset ALL punch counts (keeps customer list)?')) return; state.customers = state.customers.map(c => ({{...c, count:0, freeAvailable:0}})); state.events.push({{ t: Date.now(), type: 'reset_all' }}); save(); render(); }}
+    function deleteAll() {{ if (!confirm('DELETE ALL customers and data? This cannot be undone.')) return; state = {{ target: state.target, customers: [], events: state.events, pin: state.pin }}; state.events.push({{ t: Date.now(), type: 'delete_all' }}); save(); render(); }}
+
+    // Import/Export
+    function exportData() {{
+      const dataStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([dataStr], {{ type: 'application/json' }});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'bca_rewards_backup.json'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }}
+    importInput?.addEventListener('change', (e) => {{
+      const file = e.target.files?.[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {{ try {{ const imported = JSON.parse(String(ev.target?.result || '{{}}')); if (!imported || !imported.customers) throw new Error('Invalid backup'); state = imported; targetInput.value = state.target || 10; save(); render(); alert('Import successful!'); }} catch(err) {{ alert('Import failed: ' + err.message); }} finally {{ importInput.value=''; }} }};
+      reader.readAsText(file);
+    }});
+
+    // Reports
+    function setQuickRange(kind) {{
+      const today = new Date(); const from = new Date(today);
+      if (kind==='today') {{ from.setHours(0,0,0,0); }}
+      if (kind==='week') {{
+        const day = today.getDay();
+        const diffToMonday = (day+6)%7;
+        from.setDate(today.getDate() - diffToMonday); from.setHours(0,0,0,0);
+      }}
+      const to = new Date(today); to.setHours(23,59,59,999);
+      document.getElementById('fromDate').value = from.toISOString().slice(0,10);
+      document.getElementById('toDate').value = to.toISOString().slice(0,10);
+      renderReport();
+    }}
+    function renderReport() {{
+      const fromEl = document.getElementById('fromDate'); const toEl = document.getElementById('toDate');
+      if (!fromEl.value || !toEl.value) return;
+      const from = new Date(fromEl.value + 'T00:00:00'); const to = new Date(toEl.value + 'T23:59:59');
+      const evs = state.events.filter(e => e.t >= from.getTime() && e.t <= to.getTime());
+      const purchases = evs.filter(e => e.type==='purchase').length;
+      const redeems = evs.filter(e => e.type==='redeem').length;
+      document.getElementById('reportSummary').textContent = `Range: ${{fromEl.value}} → ${{toEl.value}} • Purchases: ${{purchases}} • Free drinks redeemed: ${{redeems}}`;
+      const counts = new Map();
+      evs.forEach(e => {{ if (e.type==='purchase') counts.set(e.cid, (counts.get(e.cid)||0)+1); }});
+      const arr = Array.from(counts.entries()).map(([cid,n])=>({{ name: (findCustomer(cid)?.name)||'(deleted)', n }})).sort((a,b)=>b.n-a.n).slice(0,10);
+      const tc = document.getElementById('topCustomers'); tc.innerHTML = arr.length? '<h4>Top Customers</h4>' + arr.map(x=>`<div class="meta">${{x.name}} — ${{x.n}} purchases</div>`).join('') : '<div class="meta">No purchases in this range.</div>';
+    }}
+    function exportCSV() {{
+      let lines = ['timestamp,type,customer'];
+      state.events.forEach(e => {{ const name = findCustomer(e.cid)?.name || ''; lines.push(`${{new Date(e.t).toISOString()}},${{e.type}},${{JSON.stringify(name)}}`); }});
+      const blob = new Blob([lines.join('\n')], {{ type: 'text/csv' }});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'bca_rewards_events.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }}
+
+    // PWA registration
+    if ('serviceWorker' in navigator) {{ window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }}
+
+    // Seed
+    function seed() {{
+      if (state.customers.length===0) {{
+        const a = {{ id: id(), name: 'Sample Student A', count: 3, freeAvailable: 0, totalPurchases: 3, updatedAt: Date.now() }};
+        const b = {{ id: id(), name: 'Sample Student B', count: 9, freeAvailable: 0, totalPurchases: 9, updatedAt: Date.now() }};
+        state.customers.push(a,b);
+        state.events.push({{ t: Date.now(), type: 'add_customer', cid: a.id }}, {{ t: Date.now(), type: 'add_customer', cid: b.id }});
+      }}
+    }}
+
+    load();
+    if (!localStorage.getItem(LS_KEY)) {{ seed(); save(); render(); }}
+    setQuickRange('today');
+  </script>
+</body>
+</html>
